@@ -5,7 +5,7 @@ import pandas as pd
 import QuantLib as ql
 
 from fixedincomelib.apis.date import qfCreateSchedule
-from fixedincomelib.date import Date, Period, accrued, add_period
+from fixedincomelib.date import Date, Period, accrued, add_period, subtract_period
 from fixedincomelib.market.basics import AccrualBasis, BusinessDayConvention, HolidayConvention
 
 
@@ -191,11 +191,10 @@ class BondCalculator:
         none_hol = HolidayConvention.new('NONE')
 
         periods = []
-        for i, row in enumerate(df):
-            s, e, _, _, p, _ = row
-            start_date = Date(s)
-            end_date = Date(e)
-            payment_date = Date(p)
+        for i, row in df.iterrows():
+            start_date = Date(row['StartDate'])
+            end_date = Date(row['EndDate'])
+            payment_date = Date(row['PaymentDate'])
 
             expected_end = add_period(start_date, self.coupon_period, none_bdc, none_hol, eom)
             try:
